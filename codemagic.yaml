@@ -35,7 +35,7 @@ workflows:
         script: |
           cd ios
           xcode-project build-ipa \
-            --workspace App/App.xcworkspace \
+            --workspace App.xcworkspace \
             --scheme App
 
     artifacts:
