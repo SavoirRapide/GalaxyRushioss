@@ -7,6 +7,9 @@ workflows:
     environment:
       xcode: latest
       node: 22
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.a2games.galaxyrush
 
     scripts:
       - name: Install dependencies
@@ -20,6 +23,10 @@ workflows:
       - name: Sync Capacitor
         script: |
           npx cap sync ios
+
+      - name: Set up code signing
+        script: |
+          xcode-project use-profiles
 
       - name: Build iOS
         script: |
