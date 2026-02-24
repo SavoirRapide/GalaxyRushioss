@@ -28,16 +28,17 @@ workflows:
         script: |
           xcode-project use-profiles
 
-      - name: Build iOS
+      - name: Build and export IPA
         script: |
           cd ios
-          xcodebuild \
-            -project App/App.xcodeproj \
-            -scheme App \
-            -configuration Release \
-            -archivePath build/App.xcarchive \
-            archive
+          xcode-project build-ipa \
+            --workspace App/App.xcworkspace \
+            --scheme App
 
     artifacts:
       - ios/build/**/*.ipa
-      - ios/build/**/*.xcarchive
+
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
