@@ -30,13 +30,31 @@ workflows:
       - name: Set up code signing
         script: |
           xcode-project use-profiles
-
       - name: Build and export IPA
         script: |
           cd ios
-          xcode-project build-ipa \
-            --workspace App.xcworkspace \
-            --scheme App
+          echo "=== Contents of ios/ ==="
+          ls -la
+          echo "=== Searching for Xcode workspace/project ==="
+          find . -maxdepth 3 \( -name "*.xcworkspace" -o -name "*.xcodeproj" \)
+
+          WORKSPACE=$(find . -maxdepth 3 -name "*.xcworkspace" | head -n 1)
+          PROJECT=$(find . -maxdepth 3 -name "*.xcodeproj" | head -n 1)
+
+          if [ -n "$WORKSPACE" ]; then
+            echo "✅ Using workspace: $WORKSPACE"
+            xcode-project build-ipa \
+              --workspace "$WORKSPACE" \
+              --scheme App
+          elif [ -n "$PROJECT" ]; then
+            echo "✅ Using project: $PROJECT"
+            xcode-project build-ipa \
+              --project "$PROJECT" \
+              --scheme App
+          else
+            echo "❌ No .xcworkspace or .xcodeproj found under ios/"
+            exit 1
+          fi
 
     artifacts:
       - ios/build/**/*.ipa
